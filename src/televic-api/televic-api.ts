@@ -52,12 +52,12 @@ export default class TelevicApi {
 		}
 	}
 	
-	public async SetSeat(seatNbr: number, state: boolean){ //: Promise<InUseStatus> {
+	public async SetSeat(seatNbr: number, state: boolean, request: boolean){ //: Promise<InUseStatus> {
 		const url = `http://${this._host}:${this._port}/api/discussion/seats/${seatNbr}`
 		const response = await fetch(url, {
 			method: 'put',
 			headers: this._defaultHeaders,
-			body: JSON.stringify({microphoneOn: state, "requestingToSpeak": false})
+			body: JSON.stringify({microphoneOn: state, "requestingToSpeak": request})
 		})
 		return this.checkStatus(response)
 		

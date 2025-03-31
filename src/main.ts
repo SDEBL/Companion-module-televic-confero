@@ -1,20 +1,21 @@
 import TelevicApi from './televic-api/televic-api.js'
 import { InstanceBase, runEntrypoint, InstanceStatus, SomeCompanionConfigField } from '@companion-module/base'
-import { GetConfigFields, type ModuleConfig } from './config.js'
+import { GetConfigFields, type TelevicConferoConfig } from './config.js'
 import { UpdateVariableDefinitions } from './variables.js'
 import { UpgradeScripts } from './upgrades.js'
 import { UpdateActions } from './actions.js'
 import { UpdateFeedbacks } from './feedbacks.js'
 
-export class ModuleInstance extends InstanceBase<ModuleConfig> {
-	config!: ModuleConfig // Setup in init()
+export class TelevicConferoInstance extends InstanceBase<TelevicConferoConfig> {
+	config!: TelevicConferoConfig // Setup in init()
 	private _api: TelevicApi | null = null
+
 
 	constructor(internal: unknown) {
 		super(internal)
 	}
 
-	async init(config: ModuleConfig): Promise<void> {
+	async init(config: TelevicConferoConfig): Promise<void> {
 		this.config = config
 		this._api = new TelevicApi(config.host, config.port, config.token)
 		this.updateStatus(InstanceStatus.Ok)
@@ -28,7 +29,7 @@ export class ModuleInstance extends InstanceBase<ModuleConfig> {
 		this.log('debug', 'destroy')
 	}
 
-	async configUpdated(config: ModuleConfig): Promise<void> {
+	async configUpdated(config: TelevicConferoConfig): Promise<void> {
 		this.config = config
 	}
 
@@ -49,10 +50,10 @@ export class ModuleInstance extends InstanceBase<ModuleConfig> {
 		UpdateVariableDefinitions(this)
 	}
 
-	setSeatState(seatId: number, state: boolean) {
-	console.log('Set Microphone State  ', seatId , " to ", state)
-		this._api?.SetSeat(seatId, state)
+	setSeatState(seatId: number, state: boolean, request: boolean) {
+	console.log('Set Microphone State  ', seatId , " to ", state, " [", request, "]" )
+		this._api?.SetSeat(seatId, state, request)
 	}
 }
 
-runEntrypoint(ModuleInstance, UpgradeScripts)
+runEntrypoint(TelevicConferoInstance, UpgradeScripts)

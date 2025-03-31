@@ -1,6 +1,6 @@
 import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 
-export interface ModuleConfig {
+export interface TelevicConferoConfig {
 	host: string
 	port: number
 	token: string
@@ -22,7 +22,7 @@ export function GetConfigFields(): SomeCompanionConfigField[] {
 			width: 4,
 			min: 1,
 			max: 65535,
-			default: 8000,
+			default: 9080,
 		},
 		{
 			type: 'textinput',
