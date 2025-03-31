@@ -1,10 +1,11 @@
 import { combineRgb } from '@companion-module/base'
 import type { TelevicConferoInstance } from './main.js'
+//import { resolve } from 'path'
 
 export function UpdateFeedbacks(self: TelevicConferoInstance): void {
 	self.setFeedbackDefinitions({
-		ChannelState: {
-			name: 'Example Feedback',
+		micState: {
+			name: 'Microphone State',
 			type: 'boolean',
 			defaultStyle: {
 				bgcolor: combineRgb(255, 0, 0),
@@ -12,22 +13,27 @@ export function UpdateFeedbacks(self: TelevicConferoInstance): void {
 			},
 			options: [
 				{
-					id: 'num',
+					id: 'seatID',
 					type: 'number',
-					label: 'Test',
-					default: 5,
+					label: 'Seat',
+					default: 1,
 					min: 0,
-					max: 10,
+					max: 200,
 				},
 			],
 			callback: (feedback) => {
-				console.log('Hello world!', feedback.options.num)
-				if (Number(feedback.options.num) > 5) {
-					return true
-				} else {
-					return false
-				}
+				let status = self.getSeatState(parseInt(feedback.options.seatID as string))?.then (data => {
+					console.log('seat status:', feedback.options.seatID , " -  ", data)
+					return (data? data: false)
+					})
+				return Promise.resolve(status) 
 			},
+			subscribe: (feedback) => {
+                self.pollSubscribe(parseInt(feedback.options.seatID as string))
+            },
+            unsubscribe: (feedback) => {
+                self.Pollunsubscribe(parseInt(feedback.options.seatID as string) )
+            },
 		},
 	})
 }

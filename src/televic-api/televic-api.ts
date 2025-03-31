@@ -1,5 +1,4 @@
 import fetch, { HeadersInit, Response } from 'node-fetch'
-//const node_fetch_1 = __importDefault(require("node-fetch"));
 
 class HTTPResponseError extends Error {
 	response: any
@@ -9,7 +8,7 @@ class HTTPResponseError extends Error {
 	}
 }
 
-interface TelevicMicStatusResponse{
+export interface TelevicMicStatusResponse{
     microphoneOn: boolean
     requestingToSpeak: boolean
 }
@@ -38,28 +37,24 @@ export default class TelevicApi {
 			throw new HTTPResponseError(response)
 		}
 	}
-	public async GetSeat(seatNbr: number) { //: Promise<InUseStatus>
+	public async GetSeat(seatNbr: number): Promise<boolean> {
 		const url = `http://${this._host}:${this._port}/api/discussion/seats/${seatNbr}`
 		const response = await fetch(url, {
 			method: 'get',
 			headers: this._defaultHeaders,
-		})
-		this.checkStatus(response)
+		 })
+		this.checkStatus(response)	
 		const data = (await response.json()) as TelevicMicStatusResponse
-		return {
-			microphoneOn: data.microphoneOn,
-			requestingToSpeak: data.requestingToSpeak,
-		}
+		return data.microphoneOn
 	}
 	
-	public async SetSeat(seatNbr: number, state: boolean, request: boolean){ //: Promise<InUseStatus> {
+	public async SetSeat(seatNbr: number, state: boolean, request: boolean){ 
 		const url = `http://${this._host}:${this._port}/api/discussion/seats/${seatNbr}`
 		const response = await fetch(url, {
 			method: 'put',
 			headers: this._defaultHeaders,
 			body: JSON.stringify({microphoneOn: state, "requestingToSpeak": request})
 		})
-		return this.checkStatus(response)
-		
+		return this.checkStatus(response)		
 	}
 }
